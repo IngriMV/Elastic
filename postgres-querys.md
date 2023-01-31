@@ -63,7 +63,7 @@ input {
     jdbc_password => ""
     #schedule => "*/1 * * * *"
    #statement_filepath => "/etc/logstash/query.sql"
-    statement => "select id::text AS user_id, ip_address::text AS postgresql_log_client_addr, time::timestamp AT TIME ZONE 'America/bogota' AS postgresql_log_session_start_time, boleanos::bool AS postgresql_activity_state, data::text AS message from * where time >= '2022¿3-01-30' and time >:sql_last_value order by updated_at desc;"
+    statement => "select id::text AS user_id, ip::text AS postgresql_log_client_addr, time::timestamp AT TIME ZONE 'America/bogota' AS postgresql_log_session_start_time, boleanos::bool AS postgresql_activity_state, data::text AS message from * where time >= '2023-01-30' and time >:sql_last_value order by updated_at desc;"
     type => "query1"
   }
 }
@@ -117,6 +117,32 @@ output {
    
   }
 }
+```
 
+#### Paso 4. Configuración del archivo pipeline.yml
+
+Ir a la ruta
+```bash
+cd /etc/logstash/
+```
+Editar el archivo denominado  `pipelines.yml` 
+```bash
+sudo nano /etc/logstash/pipelines.yml
+```
+
+Como se trata de dos archivos `.conf` de acuerdo a la documentación [Multiples pipelines](https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html#multiple-pipelines) para múltiples archivos de configuración se edita las pipelines quedando de la siguiente forma:
+
+```bash
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+#   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+
+#- pipeline.id: main
+#  path.config: "/etc/logstash/conf.d/*.conf"
+
+- pipeline.id: query-ejemplo1
+  path.config: "/etc/logstash/conf.d/query1.conf"
+- pipeline.id: query-ejemplo2
+  path.config: "/etc/logstash/conf.d/query2.conf"
 ```
 
