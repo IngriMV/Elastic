@@ -48,7 +48,7 @@ De acuerdo a la documentación de Elastic [Diseño de directorios](https://www.e
 cd /etc/logstash/conf.d/ 
 sudo nano ejemplo.conf
 ```
-Allí se crea el archivo:
+Allí se crea el archivo denominado **ejemplo.conf**:
 
 ```bash
 # Sample Logstash configuration for creating a simple
@@ -117,6 +117,10 @@ output {
   }
 }
 ```
+
+Para evitar duplicidad en los datos de la query se reemplaza el valor de la hora del **timestamp** al campo que genera la hora de la consulta o el registro de la misma, en este ejemplo **time** donde tambien se le asigna el valor de **>:sql_last_value** que sirve para realizar una consulta incremental en una base de datos y obtener solo los registros que han sido actualizados o añadidos desde la última ejecución de la consulta.
+
+La variable **":sql_last_value"** se utiliza para almacenar el valor de tiempo de la última ejecución de la consulta y se actualiza automáticamente en cada ejecución.Para más información [jdbc input plugin](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-jdbc.html)
 
 #### Paso 4. Configuración del archivo pipeline.yml
 
