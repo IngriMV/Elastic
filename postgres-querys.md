@@ -71,7 +71,7 @@ input {
 filter {
    grok{
    match => {"message"=> ['.*"login": %{DATA:user.login},.*"error": \["%{DATA:error.code}"\].*',
-                          '.*risk_score": %{NUMBER:event.risk_score}.*"time2": "%{TIMESTAMP_ISO8601:postgresql.activity.state_change}.*'
+                          '.*"time2": "%{TIMESTAMP_ISO8601:postgresql.activity.state_change}.*'
      ]
 
   }
@@ -90,8 +90,7 @@ filter {
         remove_tag => ["_dateparsefailure"]
         remove_tag => ["[]"]       
     
-  convert => {
-          "event.risk_score" => "float"          
+  convert => {                  
           "user.login" => "boolean"
           
         }  
@@ -145,4 +144,14 @@ Como se trata de dos archivos `.conf` de acuerdo a la documentación [Multiples 
 - pipeline.id: query-ejemplo2
   path.config: "/etc/logstash/conf.d/query2.conf"
 ```
+
+#### Paso 5. Ejecución de Logstash
+
+Se inicia el servicio de logstash con el siguiente comando:
+
+```bash
+sudo systemctl start logstash.service
+sudo systemctl enable logstash.service
+```
+
 
