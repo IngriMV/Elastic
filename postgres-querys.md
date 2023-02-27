@@ -96,6 +96,22 @@ filter {
         }  
   }
 
+   mutate {
+    copy => {
+      "@timestamp" => "ingest_date"
+    }
+   }
+  
+    mutate {
+    copy => {
+      "postgresql.log.session_start_time" => "@timestamp"
+         }
+   }
+
+   mutate{
+    remove_field => ["ingest_date"]
+   }
+
    date {
         match => ["postgresql.activity.state_change", "yyyy/MM/dd HH:mm:ss Z", "ISO8601"]
         target => ["postgresql.activity.state_change"]
@@ -121,6 +137,14 @@ output {
 Para evitar duplicidad en los datos de la query se reemplaza el valor de la hora del **timestamp** al campo que genera la hora de la consulta o el registro de la misma, en este ejemplo **time** donde tambien se le asigna el valor de **>:sql_last_value** que sirve para realizar una consulta incremental en una base de datos y obtener solo los registros que han sido actualizados o añadidos desde la última ejecución de la consulta.
 
 La variable **":sql_last_value"** se utiliza para almacenar el valor de tiempo de la última ejecución de la consulta y se actualiza automáticamente en cada ejecución.Para más información [jdbc input plugin](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-jdbc.html)
+
+Se copia el valor del **timestamp** en el field **ingest_date**
+Se ocupa el field  **postgresql.log.session_start_time** con el valor del **timestamp**
+
+De esta forma se evita duplicidad de los logs ya que registra el field de **timestamp** en un campo para que sea igual al registro de la ingesta.
+
+En resumen, este fragmento de código se utiliza para copiar el valor del campo "postgresql.log.session_start_time" al campo "@timestamp" y luego eliminar el campo "ingest_date". El resultado final es que el registro tendrá un campo "@timestamp" actualizado con la hora de inicio de la sesión de base de datos PostgreSQL.
+
 
 #### Paso 4. Configuración del archivo pipeline.yml
 
