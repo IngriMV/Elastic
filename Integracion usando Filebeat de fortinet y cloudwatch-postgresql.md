@@ -1,4 +1,4 @@
-# Integracion usando Filebeat de fortinet y cloudwatch-postgresql
+# Integracion usando el beat (Filebeat) utilizando los modulos de fortinet y cloudwatch-postgresql
 
 La sigiuente guía, es el paso a paso de la configuración de **filebeat.yml** para diferentes tipos de datos, para este ejemplo datos de fortinet y Cloudwatch.
 
